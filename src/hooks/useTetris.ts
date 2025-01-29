@@ -180,6 +180,7 @@ export const useTetris = () => {
     isPaused,
     nextPiece,
     currentPiece,
+    position,
     resetGame,
     setIsPaused
   };

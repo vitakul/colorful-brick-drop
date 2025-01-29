@@ -13,6 +13,8 @@ const Index = () => {
     gameOver,
     isPaused,
     nextPiece,
+    currentPiece,
+    position,
     resetGame,
     setIsPaused
   } = useTetris();
@@ -43,7 +45,11 @@ const Index = () => {
             </div>
           </div>
           <div className="relative">
-            <TetrisBoard board={board} />
+            <TetrisBoard 
+              board={board} 
+              currentPiece={currentPiece} 
+              position={position}
+            />
             {(gameOver || isPaused) && (
               <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
                 <div className="text-white text-center">

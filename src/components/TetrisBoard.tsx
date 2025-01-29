@@ -3,12 +3,32 @@ import { TETROMINO_COLORS } from '../utils/tetris-constants';
 
 interface TetrisBoardProps {
   board: number[][];
+  currentPiece?: number[][];
+  position?: { x: number; y: number };
 }
 
-const TetrisBoard: React.FC<TetrisBoardProps> = ({ board }) => {
+const TetrisBoard: React.FC<TetrisBoardProps> = ({ board, currentPiece, position }) => {
+  // Create a copy of the board to avoid mutating the original
+  const displayBoard = board.map(row => [...row]);
+
+  // Merge the current piece into the display board
+  if (currentPiece && position) {
+    currentPiece.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value !== 0) {
+          const boardY = position.y + y;
+          const boardX = position.x + x;
+          if (boardY >= 0 && boardY < board.length && boardX >= 0 && boardX < board[0].length) {
+            displayBoard[boardY][boardX] = value;
+          }
+        }
+      });
+    });
+  }
+
   return (
     <div className="game-board">
-      {board.map((row, i) => (
+      {displayBoard.map((row, i) => (
         <div key={i} className="flex">
           {row.map((cell, j) => (
             <div

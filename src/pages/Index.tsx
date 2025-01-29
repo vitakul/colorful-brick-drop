@@ -27,6 +27,14 @@ const Index = () => {
           <div className="space-y-4">
             <NextPiece piece={nextPiece} type={nextPiece[0].find(cell => cell !== 0) || 1} />
             <GameStats score={score} level={level} lines={lines} />
+            <div className="bg-black/20 p-4 rounded-lg text-white/80 text-sm space-y-2">
+              <h3 className="font-bold mb-2">Controls:</h3>
+              <p>← → : Move Left/Right</p>
+              <p>↓ : Move Down</p>
+              <p>↑ : Rotate</p>
+              <p>Space : Hard Drop</p>
+              <p>P : Pause Game</p>
+            </div>
             <div className="space-y-2">
               <Button
                 onClick={() => isPaused ? setIsPaused(false) : setIsPaused(true)}
@@ -65,9 +73,6 @@ const Index = () => {
               </div>
             )}
           </div>
-        </div>
-        <div className="mt-8 text-white/60 text-sm">
-          <p>Controls: Arrow keys to move • Space for hard drop • P to pause</p>
         </div>
       </div>
     </div>

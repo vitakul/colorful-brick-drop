@@ -124,8 +124,13 @@ export const useTetris = () => {
       newY++;
     }
     setPosition(prev => ({ ...prev, y: newY }));
-    moveDown();
-  }, [currentPiece, position, checkCollision, moveDown]);
+    // Immediately merge the piece after setting position
+    const newBoard = mergePieceToBoard();
+    setBoard(checkLines(newBoard));
+    setCurrentPiece(nextPiece);
+    setNextPiece(getRandomTetromino());
+    setPosition({ x: 3, y: 0 });
+  }, [currentPiece, nextPiece, position, checkCollision, mergePieceToBoard, checkLines]);
 
   useEffect(() => {
     if (!gameOver && !isPaused) {

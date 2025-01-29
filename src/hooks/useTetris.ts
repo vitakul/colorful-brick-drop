@@ -58,16 +58,26 @@ export const useTetris = () => {
 
   const mergePieceToBoard = useCallback(() => {
     const newBoard = board.map(row => [...row]);
+    
     currentPiece.forEach((row, y) => {
       row.forEach((value, x) => {
         if (value !== 0) {
           const newY = position.y + y;
-          if (newY >= 0) {
-            newBoard[newY][position.x + x] = value;
+          const newX = position.x + x;
+          
+          // Add boundary checks
+          if (
+            newY >= 0 && 
+            newY < BOARD_HEIGHT && 
+            newX >= 0 && 
+            newX < BOARD_WIDTH
+          ) {
+            newBoard[newY][newX] = value;
           }
         }
       });
     });
+    
     return newBoard;
   }, [board, currentPiece, position]);
 

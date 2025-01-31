@@ -3,6 +3,8 @@ import TetrisBoard from '../components/TetrisBoard';
 import NextPiece from '../components/NextPiece';
 import GameStats from '../components/GameStats';
 import { Button } from '../components/ui/button';
+import { Switch } from '../components/ui/switch';
+import { Label } from '../components/ui/label';
 
 const Index = () => {
   const {
@@ -16,7 +18,10 @@ const Index = () => {
     currentPiece,
     position,
     resetGame,
-    setIsPaused
+    setIsPaused,
+    showGhostPiece,
+    setShowGhostPiece,
+    getGhostPosition
   } = useTetris();
 
   return (
@@ -34,6 +39,16 @@ const Index = () => {
               <p>↑ : Rotate</p>
               <p>Space : Hard Drop</p>
               <p>P : Pause Game</p>
+            </div>
+            <div className="bg-black/20 p-4 rounded-lg">
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="ghost-piece"
+                  checked={showGhostPiece}
+                  onCheckedChange={setShowGhostPiece}
+                />
+                <Label htmlFor="ghost-piece" className="text-white">Show Ghost Piece</Label>
+              </div>
             </div>
             <div className="space-y-2">
               <Button
@@ -57,6 +72,8 @@ const Index = () => {
               board={board} 
               currentPiece={currentPiece} 
               position={position}
+              ghostPiece={showGhostPiece ? currentPiece : undefined}
+              ghostPosition={showGhostPiece ? getGhostPosition() : undefined}
             />
             {(gameOver || isPaused) && (
               <div className="absolute inset-0 bg-black/70 flex items-center justify-center">

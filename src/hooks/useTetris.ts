@@ -20,6 +20,7 @@ export const useTetris = () => {
   const [lines, setLines] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [showGhostPiece, setShowGhostPiece] = useState(true);
 
   const checkCollision = useCallback((piece: number[][], pos: { x: number; y: number }) => {
     for (let y = 0; y < piece.length; y++) {
@@ -40,6 +41,16 @@ export const useTetris = () => {
     }
     return false;
   }, [board]);
+
+  const getGhostPosition = useCallback(() => {
+    let ghostY = position.y;
+    
+    while (!checkCollision(currentPiece, { x: position.x, y: ghostY + 1 })) {
+      ghostY++;
+    }
+    
+    return { x: position.x, y: ghostY };
+  }, [currentPiece, position, checkCollision]);
 
   const rotatePiece = useCallback(() => {
     const rotated = currentPiece[0].map((_, i) =>
@@ -217,7 +228,10 @@ export const useTetris = () => {
     currentPiece,
     position,
     resetGame,
-    setIsPaused
+    setIsPaused,
+    showGhostPiece,
+    setShowGhostPiece,
+    getGhostPosition
   };
 };
 

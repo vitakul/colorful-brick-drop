@@ -65,7 +65,6 @@ export const useTetris = () => {
           const newY = position.y + y;
           const newX = position.x + x;
           
-          // Add boundary checks
           if (
             newY >= 0 && 
             newY < BOARD_HEIGHT && 
@@ -123,14 +122,37 @@ export const useTetris = () => {
     while (!checkCollision(currentPiece, { x: position.x, y: newY + 1 })) {
       newY++;
     }
-    setPosition(prev => ({ ...prev, y: newY }));
-    // Immediately merge the piece after setting position
-    const newBoard = mergePieceToBoard();
+    
+    // First update the position
+    setPosition({ x: position.x, y: newY });
+    
+    // Then create a new board with the merged piece
+    const newBoard = board.map(row => [...row]);
+    currentPiece.forEach((row, y) => {
+      row.forEach((value, x) => {
+        if (value !== 0) {
+          const boardY = newY + y;
+          const boardX = position.x + x;
+          if (
+            boardY >= 0 && 
+            boardY < BOARD_HEIGHT && 
+            boardX >= 0 && 
+            boardX < BOARD_WIDTH
+          ) {
+            newBoard[boardY][boardX] = value;
+          }
+        }
+      });
+    });
+    
+    // Update the board with the merged piece
     setBoard(checkLines(newBoard));
+    
+    // Set up the next piece
     setCurrentPiece(nextPiece);
     setNextPiece(getRandomTetromino());
     setPosition({ x: 3, y: 0 });
-  }, [currentPiece, nextPiece, position, checkCollision, mergePieceToBoard, checkLines]);
+  }, [currentPiece, nextPiece, position, board, checkCollision, checkLines]);
 
   useEffect(() => {
     if (!gameOver && !isPaused) {
@@ -200,3 +222,5 @@ export const useTetris = () => {
     setIsPaused
   };
 };
+
+export default useTetris;

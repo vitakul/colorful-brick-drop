@@ -49,6 +49,11 @@
   @apply w-8 h-8 border border-white/10;
 }
 
+.tetris-cell.ghost {
+  border-style: dotted;
+  border-width: 2px;
+}
+
 .next-piece-preview {
   @apply bg-black/30 p-4 rounded-lg;
 }

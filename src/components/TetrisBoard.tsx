@@ -57,7 +57,7 @@ const TetrisBoard: React.FC<TetrisBoardProps> = ({
           {row.map((cell, j) => (
             <div
               key={`${i}-${j}`}
-              className="tetris-cell"
+              className={`tetris-cell ${cell < 0 ? 'ghost' : ''}`}
               style={{
                 backgroundColor: cell !== 0 
                   ? TETROMINO_COLORS[Math.abs(cell)]

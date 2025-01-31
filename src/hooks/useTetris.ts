@@ -123,10 +123,7 @@ export const useTetris = () => {
       newY++;
     }
     
-    // First update the position
-    setPosition({ x: position.x, y: newY });
-    
-    // Then create a new board with the merged piece
+    // Create a new board with the merged piece at the final position
     const newBoard = board.map(row => [...row]);
     currentPiece.forEach((row, y) => {
       row.forEach((value, x) => {
@@ -144,11 +141,12 @@ export const useTetris = () => {
         }
       });
     });
+
+    // Update the board first
+    const clearedBoard = checkLines(newBoard);
+    setBoard(clearedBoard);
     
-    // Update the board with the merged piece
-    setBoard(checkLines(newBoard));
-    
-    // Set up the next piece
+    // Then set up the next piece
     setCurrentPiece(nextPiece);
     setNextPiece(getRandomTetromino());
     setPosition({ x: 3, y: 0 });

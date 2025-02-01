@@ -190,7 +190,7 @@ export const useTetris = () => {
         case 'ArrowUp':
           rotatePiece();
           break;
-        case ' ':
+        case 'y':
           hardDrop();
           break;
         case 'p':

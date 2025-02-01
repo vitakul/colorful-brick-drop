@@ -43,7 +43,22 @@ const Index = () => {
 
   useEffect(() => {
     if (gameOver && currentNick) {
-      const newLeaderboard = [...leaderboard, { nick: currentNick, score }]
+      // Create a new entry
+      const newEntry = { nick: currentNick, score };
+      
+      // Combine existing leaderboard with new entry, removing duplicates and keeping highest score
+      const uniqueEntries = [...leaderboard, newEntry].reduce((acc, current) => {
+        const existingEntry = acc.find(entry => entry.nick === current.nick);
+        if (!existingEntry || existingEntry.score < current.score) {
+          // Remove existing entry if it exists
+          const filtered = acc.filter(entry => entry.nick !== current.nick);
+          return [...filtered, current];
+        }
+        return acc;
+      }, [] as Array<{ nick: string; score: number }>);
+
+      // Sort by score and take top 5
+      const newLeaderboard = uniqueEntries
         .sort((a, b) => b.score - a.score)
         .slice(0, 5);
       
@@ -70,10 +85,9 @@ const Index = () => {
   return (
     <div className="tetris-container">
       <div className="flex flex-col items-center">
-        <h1 className="text-4xl font-bold text-white mb-8">Tetris</h1>
+        <h1 className="text-4xl font-bold text-white mb-8">Duha z nebe</h1>
         <div className="flex gap-8">
           <div className="space-y-4">
-            <Leaderboard entries={leaderboard} />
             <NextPiece piece={nextPiece} type={nextPiece[0].find(cell => cell !== 0) || 1} />
             <GameStats 
               score={score} 
@@ -86,7 +100,7 @@ const Index = () => {
               <p>← → : Move Left/Right</p>
               <p>↓ : Move Down</p>
               <p>↑ : Rotate</p>
-              <p>Space : Hard Drop</p>
+              <p>Y : Hard Drop</p>
               <p>P : Pause Game</p>
             </div>
           </div>
@@ -140,6 +154,7 @@ const Index = () => {
                 New Game
               </Button>
             </div>
+            <Leaderboard entries={leaderboard} />
           </div>
         </div>
       </div>

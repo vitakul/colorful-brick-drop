@@ -41,8 +41,65 @@
   @apply relative min-h-screen flex items-center justify-center bg-gradient-to-b from-[#1A1F2C] to-[#121420];
 }
 
+.tetris-container.snowing {
+  position: relative;
+  overflow: hidden;
+}
+
+.tetris-container.snowing::before,
+.tetris-container.snowing::after {
+  content: '';
+  position: fixed;
+  top: -100vh;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(4px 4px at 100px 50vh, white 50%, transparent),
+    radial-gradient(6px 6px at 200px 10vh, white 50%, transparent),
+    radial-gradient(3px 3px at 300px 60vh, white 50%, transparent),
+    radial-gradient(4px 4px at 400px 40vh, white 50%, transparent),
+    radial-gradient(6px 6px at 500px 70vh, white 50%, transparent),
+    radial-gradient(3px 3px at 50px 30vh, white 50%, transparent),
+    radial-gradient(4px 4px at 150px 80vh, white 50%, transparent),
+    radial-gradient(6px 6px at 250px 20vh, white 50%, transparent),
+    radial-gradient(3px 3px at 350px 90vh, white 50%, transparent),
+    radial-gradient(4px 4px at 450px 30vh, white 50%, transparent);
+  background-size: 650px 650px;
+  animation: snow 20s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.tetris-container.snowing::after {
+  background-image: 
+    radial-gradient(6px 6px at 150px 15vh, white 50%, transparent),
+    radial-gradient(4px 4px at 250px 75vh, white 50%, transparent),
+    radial-gradient(3px 3px at 350px 25vh, white 50%, transparent),
+    radial-gradient(6px 6px at 450px 85vh, white 50%, transparent),
+    radial-gradient(4px 4px at 550px 35vh, white 50%, transparent),
+    radial-gradient(3px 3px at 100px 65vh, white 50%, transparent),
+    radial-gradient(6px 6px at 200px 5vh, white 50%, transparent),
+    radial-gradient(4px 4px at 300px 45vh, white 50%, transparent),
+    radial-gradient(3px 3px at 400px 95vh, white 50%, transparent),
+    radial-gradient(6px 6px at 500px 55vh, white 50%, transparent);
+  animation-duration: 30s;
+  animation-delay: -10s;
+}
+
+@keyframes snow {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
 .game-board {
-  @apply border-4 border-white/20 rounded-lg overflow-hidden;
+  @apply border-4 border-white/20 rounded-lg overflow-hidden bg-black/80;
+  position: relative;
+  z-index: 2;
 }
 
 .tetris-cell {
@@ -55,11 +112,15 @@
 }
 
 .next-piece-preview {
-  @apply bg-black/30 p-4 rounded-lg;
+  @apply bg-black/80 p-4 rounded-lg;
+  position: relative;
+  z-index: 2;
 }
 
 .game-stats {
-  @apply text-white space-y-4 bg-black/30 p-4 rounded-lg;
+  @apply text-white space-y-4 bg-black/80 p-4 rounded-lg;
+  position: relative;
+  z-index: 2;
 }
 
 @keyframes clear-line {

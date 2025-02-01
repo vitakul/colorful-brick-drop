@@ -15,6 +15,7 @@ const Index = () => {
   const [previousNicks, setPreviousNicks] = useState<string[]>([]);
   const [currentNick, setCurrentNick] = useState<string>('');
   const [leaderboard, setLeaderboard] = useState<Array<{ nick: string; score: number }>>([]);
+  const [isSnowing, setIsSnowing] = useState(false);
 
   const {
     board,
@@ -83,7 +84,7 @@ const Index = () => {
   };
 
   return (
-    <div className="tetris-container">
+    <div className={`tetris-container ${isSnowing ? 'snowing' : ''}`}>
       <div className="flex flex-col items-center">
         <h1 className="text-4xl font-bold text-white mb-8">Duha z nebe</h1>
         <div className="flex gap-8">
@@ -128,7 +129,7 @@ const Index = () => {
             )}
           </div>
           <div className="space-y-4">
-            <div className="bg-black/20 p-4 rounded-lg">
+            <div className="bg-black/20 p-4 rounded-lg space-y-4">
               <div className="flex items-center space-x-2">
                 <Switch
                   id="ghost-piece"
@@ -136,6 +137,14 @@ const Index = () => {
                   onCheckedChange={setShowGhostPiece}
                 />
                 <Label htmlFor="ghost-piece" className="text-white">Show Ghost Piece</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="snow-effect"
+                  checked={isSnowing}
+                  onCheckedChange={setIsSnowing}
+                />
+                <Label htmlFor="snow-effect" className="text-white">Snowing</Label>
               </div>
             </div>
             <div className="space-y-2">

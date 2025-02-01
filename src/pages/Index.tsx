@@ -5,8 +5,17 @@ import GameStats from '../components/GameStats';
 import { Button } from '../components/ui/button';
 import { Switch } from '../components/ui/switch';
 import { Label } from '../components/ui/label';
+import Leaderboard from '../components/Leaderboard';
+import NicknameDialog from '../components/NicknameDialog';
+import { useEffect, useState } from 'react';
+import { LEVEL_SPEED } from '../utils/tetris-constants';
 
 const Index = () => {
+  const [showNicknameDialog, setShowNicknameDialog] = useState(false);
+  const [previousNicks, setPreviousNicks] = useState<string[]>([]);
+  const [currentNick, setCurrentNick] = useState<string>('');
+  const [leaderboard, setLeaderboard] = useState<Array<{ nick: string; score: number }>>([]);
+
   const {
     board,
     score,
@@ -24,14 +33,54 @@ const Index = () => {
     getGhostPosition
   } = useTetris();
 
+  useEffect(() => {
+    // Load previous nicknames and leaderboard from localStorage
+    const storedNicks = JSON.parse(localStorage.getItem('previousNicks') || '[]');
+    const storedLeaderboard = JSON.parse(localStorage.getItem('leaderboard') || '[]');
+    setPreviousNicks(storedNicks);
+    setLeaderboard(storedLeaderboard);
+  }, []);
+
+  useEffect(() => {
+    if (gameOver && currentNick) {
+      const newLeaderboard = [...leaderboard, { nick: currentNick, score }]
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 5);
+      
+      setLeaderboard(newLeaderboard);
+      localStorage.setItem('leaderboard', JSON.stringify(newLeaderboard));
+    }
+  }, [gameOver, currentNick, score, leaderboard]);
+
+  const handleNewGame = () => {
+    setShowNicknameDialog(true);
+  };
+
+  const handleNicknameSubmit = (nickname: string) => {
+    setCurrentNick(nickname);
+    if (!previousNicks.includes(nickname)) {
+      const newNicks = [...previousNicks, nickname].slice(-5);
+      setPreviousNicks(newNicks);
+      localStorage.setItem('previousNicks', JSON.stringify(newNicks));
+    }
+    setShowNicknameDialog(false);
+    resetGame();
+  };
+
   return (
     <div className="tetris-container">
       <div className="flex flex-col items-center">
         <h1 className="text-4xl font-bold text-white mb-8">Tetris</h1>
         <div className="flex gap-8">
           <div className="space-y-4">
+            <Leaderboard entries={leaderboard} />
             <NextPiece piece={nextPiece} type={nextPiece[0].find(cell => cell !== 0) || 1} />
-            <GameStats score={score} level={level} lines={lines} />
+            <GameStats 
+              score={score} 
+              level={level} 
+              lines={lines} 
+              speed={LEVEL_SPEED[level as keyof typeof LEVEL_SPEED]}
+            />
             <div className="bg-black/20 p-4 rounded-lg text-white/80 text-sm space-y-2">
               <h3 className="font-bold mb-2">Controls:</h3>
               <p>← → : Move Left/Right</p>
@@ -56,7 +105,7 @@ const Index = () => {
                     {gameOver ? 'Game Over!' : 'Paused'}
                   </h2>
                   {gameOver && (
-                    <Button onClick={resetGame} variant="secondary">
+                    <Button onClick={handleNewGame} variant="secondary">
                       Play Again
                     </Button>
                   )}
@@ -84,7 +133,7 @@ const Index = () => {
                 {isPaused ? 'Resume' : 'Pause'}
               </Button>
               <Button
-                onClick={resetGame}
+                onClick={handleNewGame}
                 className="w-full"
                 variant="destructive"
               >
@@ -94,6 +143,12 @@ const Index = () => {
           </div>
         </div>
       </div>
+      <NicknameDialog
+        open={showNicknameDialog}
+        onClose={() => setShowNicknameDialog(false)}
+        onSubmit={handleNicknameSubmit}
+        previousNicks={previousNicks}
+      />
     </div>
   );
 };

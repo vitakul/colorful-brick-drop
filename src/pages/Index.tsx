@@ -7,7 +7,7 @@ import { Switch } from '../components/ui/switch';
 import { Label } from '../components/ui/label';
 import Leaderboard from '../components/Leaderboard';
 import NicknameDialog from '../components/NicknameDialog';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { LEVEL_SPEED } from '../utils/tetris-constants';
 
 const Index = () => {
@@ -16,6 +16,8 @@ const Index = () => {
   const [currentNick, setCurrentNick] = useState<string>('');
   const [leaderboard, setLeaderboard] = useState<Array<{ nick: string; score: number }>>([]);
   const [isSnowing, setIsSnowing] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const {
     board,
@@ -67,6 +69,26 @@ const Index = () => {
       localStorage.setItem('leaderboard', JSON.stringify(newLeaderboard));
     }
   }, [gameOver, currentNick, score, leaderboard]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      audioRef.current = new Audio('/nyan-cat.mp3');
+      audioRef.current.loop = true;
+      audioRef.current.play();
+    } else {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    }
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, [isPlaying]);
 
   const handleNewGame = () => {
     setShowNicknameDialog(true);
@@ -145,6 +167,14 @@ const Index = () => {
                   onCheckedChange={setIsSnowing}
                 />
                 <Label htmlFor="snow-effect" className="text-white">Snowing</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Switch
+                  id="music"
+                  checked={isPlaying}
+                  onCheckedChange={setIsPlaying}
+                />
+                <Label htmlFor="music" className="text-white">Music</Label>
               </div>
             </div>
             <div className="space-y-2">

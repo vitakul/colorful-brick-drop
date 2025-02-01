@@ -40,6 +40,31 @@ const Index = () => {
               <p>Space : Hard Drop</p>
               <p>P : Pause Game</p>
             </div>
+          </div>
+          <div className="relative">
+            <TetrisBoard 
+              board={board} 
+              currentPiece={currentPiece} 
+              position={position}
+              ghostPiece={showGhostPiece ? currentPiece : undefined}
+              ghostPosition={showGhostPiece ? getGhostPosition() : undefined}
+            />
+            {(gameOver || isPaused) && (
+              <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
+                <div className="text-white text-center">
+                  <h2 className="text-2xl font-bold mb-4">
+                    {gameOver ? 'Game Over!' : 'Paused'}
+                  </h2>
+                  {gameOver && (
+                    <Button onClick={resetGame} variant="secondary">
+                      Play Again
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="space-y-4">
             <div className="bg-black/20 p-4 rounded-lg">
               <div className="flex items-center space-x-2">
                 <Switch
@@ -66,29 +91,6 @@ const Index = () => {
                 New Game
               </Button>
             </div>
-          </div>
-          <div className="relative">
-            <TetrisBoard 
-              board={board} 
-              currentPiece={currentPiece} 
-              position={position}
-              ghostPiece={showGhostPiece ? currentPiece : undefined}
-              ghostPosition={showGhostPiece ? getGhostPosition() : undefined}
-            />
-            {(gameOver || isPaused) && (
-              <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                <div className="text-white text-center">
-                  <h2 className="text-2xl font-bold mb-4">
-                    {gameOver ? 'Game Over!' : 'Paused'}
-                  </h2>
-                  {gameOver && (
-                    <Button onClick={resetGame} variant="secondary">
-                      Play Again
-                    </Button>
-                  )}
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
